@@ -160,14 +160,14 @@ plt.tight_layout()
 plt.show()
 # --- Selección del filtro de ruido según la variable de experimento ---
 # Define la variable para el experimento:
-USE_TOMEKLINKS = True  # Cambia a False para usar Edited Nearest Neighbors
+USE_TOMEKLINKS = False  # Cambia a False para usar Edited Nearest Neighbors
 
 if USE_TOMEKLINKS:
     print("Aplicando TomekLinks...")
     noise_filter = TomekLinks(sampling_strategy='auto')
 else:
     print("Aplicando Edited Nearest Neighbors...")
-    noise_filter = EditedNearestNeighbors(sampling_strategy='auto')
+    noise_filter = EditedNearestNeighbours(sampling_strategy='auto')
 
 # Aplicamos el filtro de ruido sobre el dataset filtrado
 X = df_filtrado.drop('Diabetes_binary', axis=1)
@@ -219,6 +219,19 @@ max_val = df_filtrado['EatsHealthy'].max()
 print("Rango de valores de 'EatsHealthy' (PCA):", min_val, "a", max_val)
 print("\nDescripción de 'EatsHealthy':")
 print(df_filtrado['EatsHealthy'].describe())
+
+# Seleccionamos las columnas de interés
+health_features = df_filtrado[['GenHlth', 'MentHlth', 'PhysHlth']]
+
+# Instanciamos PCA para extraer una única componente
+pca_health = PCA(n_components=1, random_state=89)
+df_filtrado['Health'] = pca_health.fit_transform(health_features)
+
+# Mostramos estadísticas descriptivas de la nueva variable
+print("Rango y descripción de la variable 'Health':")
+print(df_filtrado['Health'].describe())
+
+#df_filtrado = df_filtrado.drop(columns=['GenHlth', 'MentHlth', 'PhysHlth','Fruits', 'Veggies'])
 
 # Seleccionamos las columnas numéricas del DataFrame
 numeric_cols = df_filtrado.select_dtypes(include=['float64', 'int64']).columns
