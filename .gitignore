@@ -1,0 +1,8 @@
+venv/
+venv
+# Bytecode de Python
+*.pyc
+__pycache__/
+
+# Archivos de configuración local
+*.env
